@@ -1,0 +1,54 @@
+import pandas as pd
+
+class BookLover:
+    def __init__ (self, name, email, fav_genre, num_books = 0, book_list=None):
+        self.name = name #str
+        self.email = email #str
+        self.fav_genre = fav_genre #str
+        self.num_books = num_books
+        if book_list is None:
+            self.book_list = pd.DataFrame({'book_name':[], 'book_rating':[]})
+        else:
+            self.book_list = book_list
+    
+  
+    def add_book(self, book_name, rating):
+        if book_name not in self.book_list['book_name'].to_list():
+            new_book = pd.DataFrame({
+                'book_name': [book_name], #str
+                'book_rating': [rating] #int 0-5
+            })
+            self.book_list = pd.concat([self.book_list, new_book], ignore_index=True)
+            self.num_books += 1
+        else:
+            print(f"The book '{book_name}' already exists.")
+            
+            
+    def has_read(self, book_name):
+        return book_name in self.book_list['book_name'].values #return bool
+    
+    
+    def num_books_read(self):
+        return self.num_books #returns int
+    
+    
+    def fav_books(self):
+        return self.book_list[self.book_list['book_rating'] > 3]
+        
+
+        
+if __name__ == '__main__':
+    test_object = BookLover("Han Solo", "hsolo@millenniumfalcon.com", "scifi")
+    
+    test_object.add_book("War of the Worlds", 4)
+    test_object.add_book("Exodus", 3)
+    test_object.add_book("Dune", 5)
+    
+    print(test_object.has_read("War of the Worlds")) #True
+    print(test_object.has_read("The Alchemist")) #False
+    
+    print(f"Number of books read:")
+    print(test_object.num_books_read()) #3
+    
+    print(f"Favorite books:")
+    print(test_object.fav_books()) #War of the Worlds and Dune  
